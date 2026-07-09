@@ -19,7 +19,7 @@ MAINTAINER Eugene Ware <eugene@noblesamurai.com>
 RUN apk add --no-cache curl bash
 
 # Copy WordPress files
-COPY ./www /usr/share/nginx/html
+#COPY ./www /usr/share/nginx/html
 
 # Copy Nginx configuration
 COPY ./nginx-site.conf /etc/nginx/conf.d/default.conf
