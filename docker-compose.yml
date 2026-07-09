@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: .
+    container_name: wordpress-nginx
+    ports:
+      - "80:80"
+    environment:
+      - PHP_FPM_HOST=php
+      - PHP_FPM_PORT=9000
+    depends_on:
+      - php
+    networks:
+      - wordpress
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - ./www:/usr/share/nginx/html:ro
+
+  php:
+    image: php:7.4-fpm-alpine
+    container_name: wordpress-php
+    environment:
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME:-wordpress}
+      - DB_USER=${DB_USER:-wordpress}
+      - DB_PASSWORD=${DB_PASSWORD:-changeme}
+    depends_on:
+      - db
+    networks:
+      - wordpress
+    restart: unless-stopped
+    volumes:
+      - ./www:/usr/share/nginx/html
+    # Mount PHP configuration
+    # - ./php.ini:/usr/local/etc/php/php.ini:ro
+
+  db:
+    image: mysql:5.7
+    container_name: wordpress-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-wordpress}
+      MYSQL_USER: ${DB_USER:-wordpress}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-changeme}
+    networks:
+      - wordpress
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/mysql
+
+networks:
+  wordpress:
+    driver: bridge
+
+volumes:
+  db_data:
