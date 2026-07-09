@@ -1,38 +1,42 @@
 FROM nginx:alpine
 
-# 设置工作目录
-WORKDIR /usr/share/nginx/html
+安装PHP核心及扩展 (来自新配置)
+RUN apk add --no-cache \
+    php81 \
+    php81-fpm \
+    php81-sqlite3 \
+    php81-opcache \
+    php81-mbstring \
+    php81-session \
+    bash
 
-# 删除默认配置
+配置PHP-FPM (来自新配置，并优化)
+RUN sed -i \
+    -e 's/;listen.owner = nobody/listen.owner = nginx/g' \
+    -e 's/;listen.group = nobody/listen.group = nginx/g' \
+    -e 's/listen = 127.0.0.1:9000/listen = \/var\/run\/php-fpm.sock/g' \
+    /etc/php81/php-fpm.d/www.conf
+
+配置Nginx (来自旧配置，更完整)
 RUN rm /etc/nginx/conf.d/default.conf
-
-# 添加自定义配置
-#COPY nginx.conf /etc/nginx/conf.d/
-
-# 复制静态文件到容器
-#COPY ./static /usr/share/nginx/html
-
-
-MAINTAINER Eugene Ware <eugene@noblesamurai.com>
-
-# Install curl for health checks and basic utilities
-RUN apk add --no-cache curl bash
-
-# Copy WordPress files
-#COPY ./www /usr/share/nginx/html
-
-# Copy Nginx configuration
 COPY ./nginx-site.conf /etc/nginx/conf.d/default.conf
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
-# Set proper permissions
+初始化SQLite数据库和数据目录 (来自新配置)
+RUN mkdir -p /var/www/data && \
+    touch /var/www/data/database.sqlite && \
+    chown -R nginx:nginx /var/www
+
+设置工作目录和复制应用文件 (来自旧配置)
+WORKDIR /usr/share/nginx/html
+# COPY ./www /usr/share/nginx/html  # 假设您的应用文件在这里
 RUN chown -R nginx:nginx /usr/share/nginx/html
 
-# Create a startup script for environment variable substitution
+创建启动脚本 (整合两个部分)
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Health check
+健康检查 (来自旧配置)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD curl -f http://localhost/wp-admin/admin-ajax.php || exit 1
 
