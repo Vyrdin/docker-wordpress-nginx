@@ -2,8 +2,8 @@ FROM nginx:alpine
 FROM php:fpm-alpine
 
 #只用安装 SQLite 扩展，其他都自带了
-RUN apk add --no-cache sqlite-libs \
-    && docker-php-ext-install pdo_sqlite
+RUN apk add --no-cache sqlite-libs 
+RUN apk add --no-cache sqlite-dev && docker-php-ext-install pdo_sqlite
 
 #配置 Nginx
 COPY ./nginx-site.conf /etc/nginx/conf.d/default.conf
