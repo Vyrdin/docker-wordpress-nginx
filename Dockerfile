@@ -1,6 +1,6 @@
 FROM nginx:alpine
 
-RUN apk add --no-cache \
+RUN apk update && apk add --no-cache \
     php7 \
     php7-fpm \
     php7-sqlite3 \
