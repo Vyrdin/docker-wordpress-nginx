@@ -4,7 +4,7 @@ COPY ./nginx-site.conf /etc/nginx/conf.d/default.conf
 
 FROM php:fpm-alpine
 
-RUN apk add --no-cache sqlite-dev && docker-php-ext-install pdosqlite
+RUN apk add --no-cache sqlite-dev && docker-php-ext-install pdo_sqlite
 
 RUN mkdir -p /usr/local/etc/php-fpm.d/ && \
     echo '[www]\
