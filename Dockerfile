@@ -1,12 +1,12 @@
 FROM nginx:alpine
 
 RUN apk add --no-cache \
-    php81 \
-    php81-fpm \
-    php81-sqlite3 \
-    php81-opcache \
-    php81-mbstring \
-    php81-session \
+    php8 \
+    php8-fpm \
+    php8-sqlite3 \
+    php8-opcache \
+    php8-mbstring \
+    php8-session \
     bash
 
 RUN sed -i \
