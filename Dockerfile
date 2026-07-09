@@ -4,10 +4,7 @@ FROM php:fpm-alpine
 #只用安装 SQLite 扩展，其他都自带了
 RUN apk add --no-cache sqlite-dev && docker-php-ext-install pdo_sqlite
 # 创建配置目录
-RUN mkdir -p /etc/php7/php-fpm.d/
-
-# 复制自定义配置
-COPY ./www.conf /etc/php7/php-fpm.d/www.conf
+RUN mkdir -p /etc/php7/php-fpm.d/ && echo '[www]user = nginxgroup = nginxlisten = /var/run/php-fpm.socklisten.owner = nginxlisten.group = nginxlisten.mode = 0660pm = dynamicpm.maxchildren = 5pm.startservers = 2pm.minspareservers = 1pm.maxspareservers = 3' > /etc/php7/php-fpm.d/www.conf
 
 # 确保权限正确
 RUN chown -R www-data:www-data /etc/php7/php-fpm.d/
