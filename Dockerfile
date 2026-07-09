@@ -3,7 +3,14 @@ FROM php:fpm-alpine
 
 #只用安装 SQLite 扩展，其他都自带了
 RUN apk add --no-cache sqlite-dev && docker-php-ext-install pdo_sqlite
+# 创建配置目录
+RUN mkdir -p /etc/php7/php-fpm.d/
 
+# 复制自定义配置
+COPY ./www.conf /etc/php7/php-fpm.d/www.conf
+
+# 确保权限正确
+RUN chown -R www-data:www-data /etc/php7/php-fpm.d/
 #配置 Nginx
 COPY ./nginx-site.conf /etc/nginx/conf.d/default.conf
 COPY ./nginx.conf /etc/nginx/nginx.conf
