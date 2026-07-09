@@ -33,4 +33,8 @@ RUN chmod +x /entrypoint.sh
 EXPOSE 80
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
-FROM php:fpm-alpineRUN apk add --no-cache sqlite-dev && docker-php-ext-install pdo_sqliteCOPY . /var/www/html/WORKDIR /var/www/htmlCMD ["php-fpm", "-F"]
+FROM php:fpm-alpine
+RUN apk add --no-cache sqlite-dev && docker-php-ext-install pdo_sqlite
+COPY . /var/www/html/
+WORKDIR /var/www/html/
+CMD ["php-fpm", "-F"]
