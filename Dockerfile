@@ -1,12 +1,12 @@
 FROM nginx:alpine
 
 RUN apk add --no-cache \
-    php8 \
-    php8-fpm \
-    php8-sqlite3 \
-    php8-opcache \
-    php8-mbstring \
-    php8-session \
+    php7 \
+    php7-fpm \
+    php7-sqlite3 \
+    php7-opcache \
+    php7-mbstring \
+    php7-session \
     bash
 
 RUN sed -i \
