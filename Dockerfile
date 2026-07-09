@@ -7,10 +7,10 @@ WORKDIR /usr/share/nginx/html
 RUN rm /etc/nginx/conf.d/default.conf
 
 # 添加自定义配置
-COPY nginx.conf /etc/nginx/conf.d/
+#COPY nginx.conf /etc/nginx/conf.d/
 
 # 复制静态文件到容器
-COPY ./static /usr/share/nginx/html
+#COPY ./static /usr/share/nginx/html
 
 
 MAINTAINER Eugene Ware <eugene@noblesamurai.com>
