@@ -1,17 +1,23 @@
 FROM nginx:alpine
+FROM php:fpm-alpine
 
-#启用 community 仓库并更新
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.18/main" > /etc/apk/repositories
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.18/community" >> /etc/apk/repositories
+#只用安装 SQLite 扩展，其他都自带了
+RUN apk add --no-cache sqlite-libs \
+    && docker-php-ext-install pdo_sqlite
 
-RUN apk update && apk add --no-cache \
-    php7 \
-    php7-fpm \
-    php7-sqlite3 \
-    php7-opcache \
-    php7-mbstring \
-    php7-session \
-    bash
+#配置 Nginx
+COPY ./nginx-site.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
+
+#你的应用文件和权限设置
+WORKDIR /var/www/html
+COPY . /var/www/html
+RUN chown -R www-data:www-data /var/www/html
+
+#启动脚本
+COPY ./entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
 
 RUN sed -i \
     -e 's/;listen.owner = nobody/listen.owner = nginx/g' \
