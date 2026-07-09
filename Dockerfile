@@ -13,7 +13,7 @@ RUN sed -i \
     -e 's/;listen.owner = nobody/listen.owner = nginx/g' \
     -e 's/;listen.group = nobody/listen.group = nginx/g' \
     -e 's/listen = 127.0.0.1:9000/listen = \/var\/run\/php-fpm.sock/g' \
-    /etc/php81/php-fpm.d/www.conf
+    /etc/php7/php-fpm.d/www.conf
 
 RUN rm /etc/nginx/conf.d/default.conf
 
