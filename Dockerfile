@@ -1,5 +1,9 @@
 FROM nginx:alpine
 
+#启用 community 仓库并更新
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.18/main" > /etc/apk/repositories
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.18/community" >> /etc/apk/repositories
+
 RUN apk update && apk add --no-cache \
     php7 \
     php7-fpm \
